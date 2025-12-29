@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Solicitar Férias - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-calendar-plus"></i> Solicitar Férias</h1>
+    <p>Cadastre uma nova solicitação de férias</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Funcionário *</label>
+                    {{ form.funcionario }}
+                    {% if form.funcionario.errors %}
+                        <div class="text-danger small">{{ form.funcionario.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Data de Início *</label>
+                    {{ form.data_inicio }}
+                    {% if form.data_inicio.errors %}
+                        <div class="text-danger small">{{ form.data_inicio.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Data de Término *</label>
+                    {{ form.data_fim }}
+                    {% if form.data_fim.errors %}
+                        <div class="text-danger small">{{ form.data_fim.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-12 mb-3">
+                    <label class="form-label">Observações</label>
+                    {{ form.observacoes }}
+                    {% if form.observacoes.errors %}
+                        <div class="text-danger small">{{ form.observacoes.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Informação:</strong> Os dias serão calculados automaticamente após o envio da solicitação.
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-send"></i> Solicitar Férias
+                    </button>
+                    <a href="{% url 'ferias_list' %}" class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

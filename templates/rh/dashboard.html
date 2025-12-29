@@ -1,0 +1,276 @@
+{% extends 'base.html' %}
+
+{% block title %}Dashboard - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-speedometer2"></i> Dashboard</h1>
+    <p>Bem-vindo ao HR Manager Pro - Sistema de Gestão de Recursos Humanos</p>
+</div>
+
+<!-- Estatísticas Rápidas -->
+<div class="row mb-4">
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_funcionarios }}</div>
+            <div class="stat-label">Funcionários Ativos</div>
+            <div class="mt-2">
+                <span class="text-success">
+                    <i class="bi bi-arrow-up"></i> +{{ funcionarios_recentes }} este mês
+                </span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_departamentos }}</div>
+            <div class="stat-label">Departamentos</div>
+            <div class="mt-2">
+                <a href="{% url 'departamento_list' %}" class="text-decoration-none">
+                    <i class="bi bi-building"></i> Ver todos
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-number">{{ total_cargos }}</div>
+            <div class="stat-label">Cargos</div>
+            <div class="mt-2">
+                <a href="{% url 'cargo_list' %}" class="text-decoration-none">
+                    <i class="bi bi-briefcase-fill"></i> Gerenciar
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-3 mb-3">
+        <div class="stat-card">
+            <div class="stat-number">
+                <i class="bi bi-calendar-check"></i>
+            </div>
+            <div class="stat-label">Férias Pendentes</div>
+            <div class="mt-2">
+                <a href="{% url 'ferias_list' %}" class="text-decoration-none">
+                    <i class="bi bi-arrow-right"></i> Aprovar
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Gráficos e Informações -->
+<div class="row">
+    <!-- Gráfico de Funcionários por Departamento -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-bar-chart"></i> Funcionários por Departamento</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="deptChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Gráfico de Status dos Funcionários -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-pie-chart"></i> Status dos Funcionários</h5>
+            </div>
+            <div class="card-body">
+                <canvas id="statusChart" height="300"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Aniversariantes do Mês e Férias Recentes -->
+<div class="row">
+    <!-- Aniversariantes -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-gift-fill"></i> Aniversariantes do Mês</h5>
+            </div>
+            <div class="card-body">
+                {% if aniversariantes %}
+                    <div class="list-group list-group-flush">
+                        {% for aniversariante in aniversariantes %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                                <div class="d-flex align-items-center">
+                                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                        {{ aniversariante.nome_completo|first }}
+                                    </div>
+                                    <div>
+                                        <h6 class="mb-0">{{ aniversariante.nome_completo }}</h6>
+                                        <small class="text-muted">{{ aniversariante.departamento.nome }}</small>
+                                    </div>
+                                </div>
+                                <span class="badge bg-purple">
+                                    {{ aniversariante.data_nascimento|date:"d/m" }}
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">Nenhum aniversariante este mês</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    <!-- Férias Recentes -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-calendar-check"></i> Férias Recentes</h5>
+            </div>
+            <div class="card-body">
+                {% if ferias_recentes %}
+                    <div class="list-group list-group-flush">
+                        {% for ferias in ferias_recentes %}
+                            <div class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                                <div>
+                                    <h6 class="mb-0">{{ ferias.funcionario.nome_completo }}</h6>
+                                    <small class="text-muted">
+                                        {{ ferias.data_inicio|date:"d/m/Y" }} - {{ ferias.data_fim|date:"d/m/Y" }}
+                                    </small>
+                                </div>
+                                <span class="badge bg-{{ ferias.status|lower|slice:":3" }}">
+                                    {{ ferias.get_status_display }}
+                                </span>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">Nenhuma solicitação de férias recente</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ações Rápidas -->
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-lightning-fill"></i> Ações Rápidas</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 mb-3">
+                <a href="{% url 'funcionario_create' %}" class="btn btn-primary w-100">
+                    <i class="bi bi-person-plus-fill"></i> Novo Funcionário
+                </a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="{% url 'ferias_create' %}" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-calendar-plus"></i> Solicitar Férias
+                </a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="{% url 'folha_pagamento_create' %}" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-file-earmark-plus"></i> Nova Folha
+                </a>
+            </div>
+            <div class="col-md-3 mb-3">
+                <a href="{% url 'avaliacao_create' %}" class="btn btn-outline-primary w-100">
+                    <i class="bi bi-star"></i> Nova Avaliação
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Gráfico de Funcionários por Departamento
+const deptCtx = document.getElementById('deptChart').getContext('2d');
+const deptData = {
+    labels: [{% for dept in funcionarios_por_departamento %}'{{ dept.nome }}',{% endfor %}],
+    datasets: [{
+        label: 'Funcionários',
+        data: [{% for dept in funcionarios_por_departamento %}{{ dept.total_funcionarios }},{% endfor %}],
+        backgroundColor: [
+            '#6B46C1',
+            '#8B5CF6',
+            '#A78BFA',
+            '#C4B5FD',
+            '#E0E7FF'
+        ],
+        borderWidth: 0,
+        borderRadius: 8
+    }]
+};
+
+new Chart(deptCtx, {
+    type: 'bar',
+    data: deptData,
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: {
+                    color: '#f3f4f6'
+                }
+            },
+            x: {
+                grid: {
+                    display: false
+                }
+            }
+        }
+    }
+});
+
+// Gráfico de Status dos Funcionários
+fetch('{% url "dashboard_data" %}')
+    .then(response => response.json())
+    .then(data => {
+        const statusCtx = document.getElementById('statusChart').getContext('2d');
+        const statusData = {
+            labels: data.status_funcionarios.map(item => item.status),
+            datasets: [{
+                data: data.status_funcionarios.map(item => item.total),
+                backgroundColor: [
+                    '#10B981',
+                    '#F59E0B',
+                    '#EF4444',
+                    '#6B7280'
+                ],
+                borderWidth: 0
+            }]
+        };
+
+        new Chart(statusCtx, {
+            type: 'doughnut',
+            data: statusData,
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true
+                        }
+                    }
+                }
+            }
+        });
+    })
+    .catch(error => console.error('Error loading dashboard data:', error));
+</script>
+{% endblock %}

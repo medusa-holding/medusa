@@ -1,0 +1,152 @@
+{% extends 'base.html' %}
+
+{% block title %}Funcionários - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1><i class="bi bi-person-fill"></i> Funcionários</h1>
+            <p>Gerencie todos os funcionários da empresa</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'funcionario_create' %}" class="btn btn-primary">
+                <i class="bi bi-person-plus-fill"></i> Novo Funcionário
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Formulário de Busca -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                {{ search_form.nome }}
+            </div>
+            <div class="col-md-3">
+                {{ search_form.departamento }}
+            </div>
+            <div class="col-md-3">
+                {{ search_form.cargo }}
+            </div>
+            <div class="col-md-3">
+                {{ search_form.status }}
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+                <a href="{% url 'funcionario_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i> Limpar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabela de Funcionários -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Foto</th>
+                        <th>Nome</th>
+                        <th>Matrícula</th>
+                        <th>Departamento</th>
+                        <th>Cargo</th>
+                        <th>Status</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for funcionario in page_obj %}
+                    <tr>
+                        <td>
+                            {% if funcionario.foto %}
+                                <img src="{{ funcionario.foto.url }}" alt="{{ funcionario.nome_completo }}" class="rounded-circle" width="40" height="40">
+                            {% else %}
+                                <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    {{ funcionario.nome_completo|first }}
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <strong>{{ funcionario.nome_completo }}</strong><br>
+                            <small class="text-muted">{{ funcionario.email_corporativo }}</small>
+                        </td>
+                        <td>{{ funcionario.matricula }}</td>
+                        <td>{{ funcionario.departamento.nome }}</td>
+                        <td>{{ funcionario.cargo.nome }}</td>
+                        <td>
+                            <span class="badge bg-{% if funcionario.status == 'Ativo' %}success{% elif funcionario.status == 'Afastado' %}warning{% else %}danger{% endif %}">
+                                {{ funcionario.get_status_display }}
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'funcionario_detail' funcionario.pk %}" class="btn btn-sm btn-outline-primary" title="Ver Detalhes">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                            <a href="{% url 'funcionario_update' funcionario.pk %}" class="btn btn-sm btn-outline-warning" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="{% url 'funcionario_delete' funcionario.pk %}" class="btn btn-sm btn-outline-danger" title="Excluir">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-search" style="font-size: 2rem;"></i>
+                            <p class="mt-2">Nenhum funcionário encontrado</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Paginação -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Paginação">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="Primeira">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">
+                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Próxima">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Última">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

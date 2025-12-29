@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+
+{% block title %}Cadastro Empresarial - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8 col-md-10">
+        <div class="card">
+            <div class="card-header text-center">
+                <h4 class="mb-0">
+                    <i class="bi bi-building-add"></i><br>
+                    Criar Conta Empresarial
+                </h4>
+                <p class="text-muted mt-2 mb-0">
+                    Cadastre sua empresa e acesse o HR Manager Pro
+                </p>
+            </div>
+
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- ================= DADOS DA EMPRESA ================= -->
+                    <h5 class="mb-3 text-primary">
+                        <i class="bi bi-building"></i> Dados da Empresa
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nome da Empresa *</label>
+                            {{ form.nome }}
+                            {% if form.nome.errors %}
+                                <div class="text-danger small">{{ form.nome.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">CNPJ *</label>
+                            {{ form.cnpj }}
+                            {% if form.cnpj.errors %}
+                                <div class="text-danger small">{{ form.cnpj.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Endereço *</label>
+                        {{ form.endereco }}
+                        {% if form.endereco.errors %}
+                            <div class="text-danger small">{{ form.endereco.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Telefone *</label>
+                            {{ form.telefone }}
+                            {% if form.telefone.errors %}
+                                <div class="text-danger small">{{ form.telefone.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">E-mail da Empresa *</label>
+                            {{ form.email_empresa }}
+                            {% if form.email_empresa.errors %}
+                                <div class="text-danger small">{{ form.email_empresa.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="form-label">Logo da Empresa</label>
+                        {{ form.logo }}
+                        {% if form.logo.errors %}
+                            <div class="text-danger small">{{ form.logo.errors.0 }}</div>
+                        {% endif %}
+                    </div>
+
+                    <hr>
+
+                    <!-- ================= DADOS DO GESTOR RH ================= -->
+                    <h5 class="mb-3 text-primary">
+                        <i class="bi bi-person-badge"></i> Gestor de Recursos Humanos
+                    </h5>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Usuário *</label>
+                            {{ form.username }}
+                            {% if form.username.errors %}
+                                <div class="text-danger small">{{ form.username.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">E-mail do Gestor RH *</label>
+                            {{ form.email }}
+                            {% if form.email.errors %}
+                                <div class="text-danger small">{{ form.email.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Senha *</label>
+                            {{ form.password1 }}
+                            {% if form.password1.errors %}
+                                <div class="text-danger small">{{ form.password1.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="col-md-6 mb-4">
+                            <label class="form-label">Confirmar Senha *</label>
+                            {{ form.password2 }}
+                            {% if form.password2.errors %}
+                                <div class="text-danger small">{{ form.password2.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-check-circle"></i>
+                        Criar Empresa e Acessar Plataforma
+                    </button>
+                </form>
+
+                <hr>
+
+                <div class="text-center">
+                    <p class="mb-2">Já possui uma conta?</p>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary">
+                        <i class="bi bi-box-arrow-in-right"></i> Entrar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+    body {
+        display: flex;
+        align-items: center;
+        min-height: 100vh;
+        background: linear-gradient(
+            135deg,
+            var(--primary-purple) 0%,
+            var(--primary-purple-light) 100%
+        );
+    }
+
+    .card {
+        border: none;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-header {
+        background: linear-gradient(
+            135deg,
+            var(--primary-purple) 0%,
+            var(--primary-purple-light) 100%
+        );
+        color: white;
+    }
+
+    .form-control,
+    textarea,
+    input[type="file"] {
+        padding: 0.875rem;
+        border: 2px solid var(--gray-200);
+        border-radius: 6px;
+    }
+
+    .form-control:focus,
+    textarea:focus {
+        border-color: var(--primary-purple);
+        box-shadow: 0 0 0 0.2rem rgba(107, 70, 193, 0.25);
+    }
+
+    .btn-primary {
+        padding: 0.875rem;
+        font-weight: 600;
+    }
+</style>
+{% endblock %}

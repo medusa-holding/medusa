@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Gerar Folha Moçambique - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-calculator"></i> Gerar Folha de Pagamento - Moçambique</h1>
+    <p>Gere a folha de pagamento baseada nas horas trabalhadas</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Funcionário *</label>
+                    {{ form.funcionario }}
+                    {% if form.funcionario.errors %}
+                        <div class="text-danger small">{{ form.funcionario.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Mês *</label>
+                    {{ form.mes_referencia }}
+                    {% if form.mes_referencia.errors %}
+                        <div class="text-danger small">{{ form.mes_referencia.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Ano *</label>
+                    {{ form.ano_referencia }}
+                    {% if form.ano_referencia.errors %}
+                        <div class="text-danger small">{{ form.ano_referencia.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3 d-flex align-items-end">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-calculator"></i> Gerar Folha
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Informações Importantes -->
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-info-circle"></i> Informações sobre o Cálculo</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+                <h6>Cálculo do Salário</h6>
+                <ul>
+                    <li>Baseado nas horas trabalhadas no mês</li>
+                    <li>Desconto por faltas não justificadas</li>
+                    <li>Cálculo proporcional ao turno do funcionário</li>
+                </ul>
+            </div>
+            <div class="col-md-6">
+                <h6>Descontos Obrigatórios</h6>
+                <ul>
+                    <li><strong>INSS:</strong> 7% do salário bruto</li>
+                    <li><strong>IRPS:</strong> Tabela progressiva (até 25%)</li>
+                    <li><strong>Faltas:</strong> Desconto proporcional</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="alert alert-info mt-3">
+            <i class="bi bi-lightbulb"></i>
+            <strong>Dica:</strong> As faltas podem ser justificadas até 24h após a ocorrência. Faltas justificadas não geram descontos.
+        </div>
+    </div>
+</div>
+
+<!-- Estatísticas Rápidas -->
+<div class="row mt-4">
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-person-check" style="font-size: 2rem; color: #28a745;"></i>
+                <h4 class="text-success">{{ funcionarios_ativos|default:"0" }}</h4>
+                <p class="text-muted">Funcionários Ativos</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-clock" style="font-size: 2rem; color: #007bff;"></i>
+                <h4 class="text-primary">{{ turnos|default:"0" }}</h4>
+                <p class="text-muted">Turnos Cadastrados</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-currency-dollar" style="font-size: 2rem; color: #ffc107;"></i>
+                <h4 class="text-warning">MZN</h4>
+                <p class="text-muted">Moeda Local</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card">
+            <div class="card-body text-center">
+                <i class="bi bi-file-earmark-pdf" style="font-size: 2rem; color: #dc3545;"></i>
+                <h4 class="text-danger">PDF</h4>
+                <p class="text-muted">Payslip Gerado</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

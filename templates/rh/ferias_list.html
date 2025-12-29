@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}Férias - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1><i class="bi bi-calendar-check"></i> Férias</h1>
+            <p>Gerencie as solicitações de férias dos funcionários</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'ferias_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nova Solicitação
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Formulário de Busca -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                {{ search_form.funcionario }}
+            </div>
+            <div class="col-md-3">
+                {{ search_form.status }}
+            </div>
+            <div class="col-md-2">
+                {{ search_form.mes }}
+            </div>
+            <div class="col-md-2">
+                {{ search_form.ano }}
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+                <a href="{% url 'ferias_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i> Limpar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabela de Férias -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Funcionário</th>
+                        <th>Período</th>
+                        <th>Dias</th>
+                        <th>Status</th>
+                        <th>Solicitada em</th>
+                        <th>Aprovada em</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for ferias in page_obj %}
+                    <tr>
+                        <td>
+                            <strong>{{ ferias.funcionario.nome_completo }}</strong>
+                            <br><small class="text-muted">{{ ferias.funcionario.matricula }}</small>
+                        </td>
+                        <td>
+                            {{ ferias.data_inicio|date:"d/m/Y" }} - {{ ferias.data_fim|date:"d/m/Y" }}
+                        </td>
+                        <td>
+                            <span class="badge bg-info">{{ ferias.dias_uteis }} dias úteis</span>
+                            <br><small class="text-muted">{{ ferias.dias_totais }} dias totais</small>
+                        </td>
+                        <td>
+                            <span class="badge bg-{% if ferias.status == 'Aprovada' %}success{% elif ferias.status == 'Rejeitada' %}danger{% elif ferias.status == 'Solicitada' %}warning{% else %}secondary{% endif %}">
+                                {{ ferias.get_status_display }}
+                            </span>
+                        </td>
+                        <td>{{ ferias.solicitada_em|date:"d/m/Y H:i" }}</td>
+                        <td>
+                            {% if ferias.aprovada_em %}
+                                {{ ferias.aprovada_em|date:"d/m/Y H:i" }}
+                                <br><small class="text-muted">por {{ ferias.aprovada_por.username }}</small>
+                            {% else %}
+                                -
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if ferias.status == 'Solicitada' %}
+                                <form method="post" action="{% url 'ferias_aprovar' ferias.pk %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-success" title="Aprovar">
+                                        <i class="bi bi-check-lg"></i>
+                                    </button>
+                                </form>
+
+                                <form method="post" action="{% url 'ferias_rejeitar' ferias.pk %}" style="display:inline;">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-sm btn-danger" title="Rejeitar">
+                                        <i class="bi bi-x-lg"></i>
+                                    </button>
+                                </form>
+                            {% endif %}
+                        </td>
+
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-calendar" style="font-size: 2rem;"></i>
+                            <p class="mt-2">Nenhuma solicitação de férias encontrada</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Paginação -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Paginação">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="Primeira">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">
+                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Próxima">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Última">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,170 @@
+{% extends 'base.html' %}
+{% load rh_filters %}
+
+{% block title %}Faltas do Dia - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1><i class="bi bi-exclamation-triangle-fill"></i> Faltas do Dia</h1>
+            <p class="mb-0">Data: <strong class="text-primary">{{ data_atual|date:"d/m/Y" }}</strong></p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'marcar_presenca' %}" class="btn btn-primary">
+                <i class="bi bi-clock-fill"></i> Marcar Presença
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Lista de Faltas -->
+<div class="card">
+    <div class="card-body">
+        {% if presencas_falta %}
+        <form method="post">
+            {% csrf_token %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Funcionário</th>
+                            <th>Departamento</th>
+                            <th>Turno</th>
+                            <th>Horário Esperado</th>
+                            <th>Status</th>
+                            <th>Justificativa</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for presenca in presencas_falta %}
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    {% if presenca.funcionario.foto %}
+                                        <img src="{{ presenca.funcionario.foto.url }}" alt="{{ presenca.funcionario.nome_completo }}" class="rounded-circle me-2" width="40" height="40">
+                                    {% else %}
+                                        <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-2" style="width: 40px; height: 40px;">
+                                            {{ presenca.funcionario.nome_completo|first }}
+                                        </div>
+                                    {% endif %}
+                                    <div>
+                                        <strong>{{ presenca.funcionario.nome_completo }}</strong>
+                                        <br><small class="text-muted">{{ presenca.funcionario.matricula }}</small>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>{{ presenca.funcionario.departamento.nome }}</td>
+                            <td>
+                                {% if presenca.funcionario.turno %}
+                                    <span class="badge bg-info">{{ presenca.funcionario.turno.nome }}</span>
+                                {% else %}
+                                    <span class="badge bg-secondary">Não definido</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if presenca.funcionario.turno %}
+                                    Entrada: {{ presenca.funcionario.turno.horario_entrada_padrao|default:"08:00"|time:"H:i" }}<br>
+                                    Saída: {{ presenca.funcionario.turno.horario_saida_padrao|default:"17:00"|time:"H:i" }}
+                                {% else %}
+                                    <span class="text-muted">Não definido</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <span class="badge bg-danger">{{ presenca.get_status_display }}</span>
+                                {% if presenca.justificativa %}
+                                    <br><small class="text-success">Justificada</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not presenca.justificativa %}
+                                    <textarea name="motivo_{{ presenca.id }}" class="form-control form-control-sm" rows="2" placeholder="Motivo da justificativa..."></textarea>
+                                {% else %}
+                                    <small class="text-muted">{{ presenca.justificativa.motivo|truncatechars:100 }}</small>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not presenca.justificativa %}
+                                    {% if presenca.criada_em|timesince:"hours" <= 24 %}
+                                        <button type="submit" name="presenca_id" value="{{ presenca.id }}" class="btn btn-sm btn-success mb-1 w-100" formaction="?tipo_acao=justificar">
+                                            <i class="bi bi-check-lg"></i> Justificar
+                                        </button>
+                                    {% else %}
+                                        <span class="badge bg-warning text-dark">Prazo Expirado</span>
+                                    {% endif %}
+                                    <button type="submit" name="presenca_id" value="{{ presenca.id }}" class="btn btn-sm btn-outline-danger w-100" formaction="?tipo_acao=manter_falta">
+                                        <i class="bi bi-x-lg"></i> Manter Falta
+                                    </button>
+                                {% else %}
+                                    <span class="badge bg-success">Justificada</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+        {% else %}
+        <div class="text-center py-5">
+            <i class="bi bi-check-circle" style="font-size: 4rem; color: #28a745;"></i>
+            <h4 class="mt-3 text-success">Nenhuma falta registrada hoje!</h4>
+            <p class="text-muted">Todos os funcionários estão presentes ou faltas foram justificadas.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Estatísticas -->
+<div class="row mt-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3 class="text-primary">{{ presencas_falta.count }}</h3>
+                <p class="text-muted">Faltas Hoje</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3 class="text-warning">
+                    {% with justificadas=presencas_falta|filter_status:"Falta_Justificada" %}
+                    {{ justificadas.count }}
+                    {% endwith %}
+                </h3>
+                <p class="text-muted">Justificadas</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-body text-center">
+                <h3 class="text-danger">
+                    {% with nao_justificadas=presencas_falta|filter_status:"Falta" %}
+                    {{ nao_justificadas.count }}
+                    {% endwith %}
+                </h3>
+                <p class="text-muted">Não Justificadas</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+// Adicionar confirmação antes de manter falta
+document.addEventListener('DOMContentLoaded', function() {
+    const botoesManter = document.querySelectorAll('button[formaction*="manter_falta"]');
+    botoesManter.forEach(function(botao) {
+        botao.addEventListener('click', function(e) {
+            if (!confirm('Tem certeza que deseja manter esta falta sem justificativa?')) {
+                e.preventDefault();
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

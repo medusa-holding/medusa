@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Editar{% else %}Novo{% endif %} Departamento - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        <i class="bi bi-building"></i>
+        {% if form.instance.pk %}Editar{% else %}Novo{% endif %} Departamento
+    </h1>
+    <p>{% if form.instance.pk %}Atualize as informações do departamento{% else %}Cadastre um novo departamento{% endif %}</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nome do Departamento *</label>
+                    {{ form.nome }}
+                    {% if form.nome.errors %}
+                        <div class="text-danger small">{{ form.nome.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Sigla *</label>
+                    {{ form.sigla }}
+                    {% if form.sigla.errors %}
+                        <div class="text-danger small">{{ form.sigla.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-12 mb-3">
+                    <label class="form-label">Descrição</label>
+                    {{ form.descricao }}
+                    {% if form.descricao.errors %}
+                        <div class="text-danger small">{{ form.descricao.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="form-check">
+                        {{ form.ativo }}
+                        <label class="form-check-label" for="{{ form.ativo.id_for_label }}">
+                            Departamento Ativo
+                        </label>
+                    </div>
+                    {% if form.ativo.errors %}
+                        <div class="text-danger small">{{ form.ativo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi {% if form.instance.pk %}bi-check-circle{% else %}bi-plus-circle{% endif %}"></i>
+                        {% if form.instance.pk %}Atualizar{% else %}Cadastrar{% endif %} Departamento
+                    </button>
+                    <a href="{% url 'departamento_list' %}" class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

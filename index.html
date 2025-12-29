@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HR Manager Pro - Bem-vindo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-purple: #6B46C1;
+            --primary-purple-dark: #553C9A;
+            --primary-purple-light: #8B5CF6;
+        }
+        
+        body {
+            background: linear-gradient(135deg, var(--primary-purple) 0%, var(--primary-purple-light) 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        .hero-section {
+            padding: 4rem 0;
+            color: white;
+            text-align: center;
+        }
+        
+        .feature-card {
+            background: white;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            height: 100%;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature-icon {
+            font-size: 3rem;
+            color: var(--primary-purple);
+            margin-bottom: 1rem;
+        }
+        
+        .btn-custom {
+            background: white;
+            color: var(--primary-purple);
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            color: var(--primary-purple-dark);
+        }
+        
+        .code-block {
+            background: #1f2937;
+            color: #e5e7eb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            font-family: 'Courier New', monospace;
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <h1 class="display-4 fw-bold mb-4">
+                <i class="bi bi-people-fill"></i><br>
+                HR Manager Pro
+            </h1>
+            <p class="lead mb-4">
+                Sistema Completo de Gestão de Recursos Humanos<br>
+                <small>Desenvolvido com Django e Bootstrap</small>
+            </p>
+            <a href="#features" class="btn-custom">
+                <i class="bi bi-arrow-down"></i> Conheça os Recursos
+            </a>
+        </div>
+        
+        <!-- Features Section -->
+        <div id="features" class="row mb-5">
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <i class="bi bi-person-fill feature-icon"></i>
+                    <h4>Gestão de Funcionários</h4>
+                    <p>Cadastro completo de funcionários com dados pessoais, profissionais e bancários.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <i class="bi bi-calendar-check feature-icon"></i>
+                    <h4>Controle de Férias</h4>
+                    <p>Solicitação, aprovação e controle de férias com cálculo automático de dias.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <i class="bi bi-currency-dollar feature-icon"></i>
+                    <h4>Folha de Pagamento</h4>
+                    <p>Cálculo automático de salários, INSS, IRRF e demais descontos e proventos.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <i class="bi bi-star feature-icon"></i>
+                    <h4>Avaliação de Desempenho</h4>
+                    <p>Avaliações periódicas com múltiplos critérios e notas automáticas.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <i class="bi bi-mortarboard-fill feature-icon"></i>
+                    <h4>Treinamentos</h4>
+                    <p>Gerenciamento de treinamentos e controle de participação dos funcionários.</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="feature-card text-center">
+                    <i class="bi bi-graph-up feature-icon"></i>
+                    <h4>Relatórios e Gráficos</h4>
+                    <p>Dashboard interativo com gráficos e exportação para Excel.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Start Section -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="feature-card">
+                    <h3 class="text-center mb-4">
+                        <i class="bi bi-rocket-takeoff"></i> Começar a Usar
+                    </h3>
+                    
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5>1. Acessar o Sistema</h5>
+                            <p>O HR Manager Pro está rodando em Django. Para acessar:</p>
+                            
+                            <h6>Desenvolvimento:</h6>
+                            <div class="code-block">
+python manage.py runserver
+                            </div>
+                            <p>Em seguida, acesse: <code>http://127.0.0.1:8000</code></p>
+                            
+                            <h6>Credenciais de Teste:</h6>
+                            <ul>
+                                <li><strong>Usuário:</strong> admin</li>
+                                <li><strong>Senha:</strong> admin123</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="col-md-6">
+                            <h5>2. Estrutura do Sistema</h5>
+                            <p>O sistema foi desenvolvido com:</p>
+                            <ul>
+                                <li><strong>Django 4.2.7</strong> - Framework Python</li>
+                                <li><strong>Bootstrap 5</strong> - Interface responsiva</li>
+                                <li><strong>SQLite</strong> - Banco de dados (desenvolvimento)</li>
+                                <li><strong>Chart.js</strong> - Gráficos interativos</li>
+                                <li><strong>Pandas</strong> - Exportação Excel</li>
+                            </ul>
+                            
+                            <h5>3. Funcionalidades Incluídas</h5>
+                            <ul>
+                                <li>Cadastro de Empresas, Departamentos e Cargos</li>
+                                <li>Gestão completa de Funcionários</li>
+                                <li>Controle de Férias e Faltas</li>
+                                <li>Folha de Pagamento automática</li>
+                                <li>Avaliações de Desempenho</li>
+                                <li>Gestão de Documentos e Treinamentos</li>
+                                <li>Benefícios e Advertências</li>
+                                <li>Dashboard com gráficos</li>
+                                <li>Exportação para Excel</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Admin Dashboard Link -->
+        <div class="text-center mb-5">
+            <div class="feature-card">
+                <h4 class="mb-3">
+                    <i class="bi bi-gear-fill"></i> Administração
+                </h4>
+                <p class="mb-4">Acesse o painel administrativo do Django para gerenciar dados diretamente no banco:</p>
+                <a href="/admin" class="btn-custom">
+                    <i class="bi bi-lock-fill"></i> Django Admin
+                </a>
+                <p class="text-muted small mt-3">
+                    Use as credenciais: admin / admin123
+                </p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer class="text-center text-white py-4">
+            <p class="mb-0">
+                <i class="bi bi-code-slash"></i> Desenvolvido com Django e Bootstrap<br>
+                <small>HR Manager Pro - Sistema de Recursos Humanos</small>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>

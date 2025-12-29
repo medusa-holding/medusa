@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+
+{% block title %}Payslip - {{ funcionario.nome_completo }} - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1><i class="bi bi-file-earmark-text"></i> Recibo de Vencimentos</h1>
+            <p>{{ funcionario.nome_completo }} - {{ mes }}/{{ ano }}</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'payslip_pdf' funcionario.id mes ano %}" class="btn btn-danger">
+                <i class="bi bi-file-earmark-pdf"></i> Baixar PDF
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Payslip -->
+<div class="card">
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h4 class="text-primary">{{ funcionario.departamento.empresa.nome }}</h4>
+                <p class="mb-1">CNPJ: {{ funcionario.departamento.empresa.cnpj }}</p>
+                <p class="mb-1">{{ funcionario.departamento.empresa.endereco }}</p>
+                <p class="mb-0">{{ funcionario.departamento.empresa.telefone }}</p>
+            </div>
+            <div class="col-md-6 text-end">
+                <h5 class="text-muted">RECIBO DE VENCIMENTOS</h5>
+                <p class="mb-1">Referência: {{ mes }}/{{ ano }}</p>
+                <p class="mb-0">Processado em: {% now "d/m/Y H:i" %}</p>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <!-- Dados do Funcionário -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h5>Dados do Funcionário</h5>
+                <table class="table table-sm">
+                    <tr>
+                        <td><strong>Nome:</strong></td>
+                        <td>{{ funcionario.nome_completo }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Matrícula:</strong></td>
+                        <td>{{ funcionario.matricula }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Cargo:</strong></td>
+                        <td>{{ funcionario.cargo.nome }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Departamento:</strong></td>
+                        <td>{{ funcionario.departamento.nome }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Turno:</strong></td>
+                        <td>{{ funcionario.turno.nome|default:"Não definido" }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h5>Período de Trabalho</h5>
+                <table class="table table-sm">
+                    <tr>
+                        <td><strong>Mês/Ano:</strong></td>
+                        <td>{{ mes }}/{{ ano }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Dias Trabalhados:</strong></td>
+                        <td>{{ presencas_mes.count }} dias</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Horas Trabalhadas:</strong></td>
+                        <td>{{ horas_trabalhadas }} horas</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Salário/Hora:</strong></td>
+                        <td>MZN {{ salario_hora|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Faltas Não Justificadas:</strong></td>
+                        <td>{{ faltas_nao_justificadas }} dias</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <!-- Vencimentos e Descontos -->
+        <div class="row">
+            <div class="col-md-6">
+                <h5 class="text-success">VENCIMENTOS</h5>
+                <table class="table table-sm">
+                    <tr>
+                        <td>Salário Base (Horas Trabalhadas)</td>
+                        <td class="text-end">MZN {{ salario_bruto|floatformat:2 }}</td>
+                    </tr>
+                    <tr class="table-success">
+                        <td><strong>Total de Vencimentos</strong></td>
+                        <td class="text-end"><strong>MZN {{ salario_bruto|floatformat:2 }}</strong></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="col-md-6">
+                <h5 class="text-danger">DESCONTOS</h5>
+                <table class="table table-sm">
+                    <tr>
+                        <td>INSS (7%)</td>
+                        <td class="text-end">MZN {{ inss|floatformat:2 }}</td>
+                    </tr>
+                    <tr>
+                        <td>IRPS</td>
+                        <td class="text-end">MZN {{ irps|floatformat:2 }}</td>
+                    </tr>
+                    {% if desconto_faltas > 0 %}
+                    <tr>
+                        <td>Desconto por Faltas ({{ faltas_nao_justificadas }} dias)</td>
+                        <td class="text-end">MZN {{ desconto_faltas|floatformat:2 }}</td>
+                    </tr>
+                    {% endif %}
+                    <tr class="table-danger">
+                        <td><strong>Total de Descontos</strong></td>
+                        <td class="text-end"><strong>MZN {{ inss|add:irps|add:desconto_faltas|floatformat:2 }}</strong></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <!-- Total Líquido -->
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-primary text-center">
+                    <h4 class="mb-0">
+                        <i class="bi bi-currency-dollar"></i>
+                        SALÁRIO LÍQUIDO A RECEBER: MZN {{ salario_liquido|floatformat:2 }}
+                    </h4>
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <!-- Detalhes de Cálculo -->
+        <div class="row">
+            <div class="col-12">
+                <h6>Detalhes do Cálculo</h6>
+                <div class="alert alert-info">
+                    <small>
+                        <strong>Base de Cálculo INSS:</strong> Salário bruto limitado ao teto de contribuição<br>
+                        <strong>Base de Cálculo IRPS:</strong> Salário bruto - INSS<br>
+                        <strong>Desconto por Faltas:</strong> Valor proporcional às faltas não justificadas<br>
+                        <strong>Tolerância:</strong> Faltas justificadas dentro de 24h não geram descontos
+                    </small>
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <!-- Assinaturas -->
+        <div class="row mt-5">
+            <div class="col-md-6 text-center">
+                <p>_________________________________</p>
+                <p><strong>{{ funcionario.nome_completo }}</strong></p>
+                <p class="text-muted">Funcionário</p>
+            </div>
+            <div class="col-md-6 text-center">
+                <p>_________________________________</p>
+                <p><strong>Gestor RH</strong></p>
+                <p class="text-muted">Empregador</p>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <!-- Rodapé -->
+        <div class="row">
+            <div class="col-12 text-center">
+                <small class="text-muted">
+                    Este documento foi gerado automaticamente pelo sistema HR Manager Pro<br>
+                    Em conformidade com a legislação trabalhista de Moçambique
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

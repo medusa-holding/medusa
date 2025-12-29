@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Departamentos - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1><i class="bi bi-building"></i> Departamentos</h1>
+            <p>Gerencie os departamentos da empresa</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'departamento_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Novo Departamento
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Departamentos -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Sigla</th>
+                        <th>Total Funcionários</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for departamento in page_obj %}
+                    <tr>
+                        <td>
+                            <strong>{{ departamento.nome }}</strong>
+                            {% if departamento.descricao %}
+                                <br><small class="text-muted">{{ departamento.descricao|truncatechars:50 }}</small>
+                            {% endif %}
+                        </td>
+                        <td><span class="badge bg-primary">{{ departamento.sigla }}</span></td>
+                        <td>
+                            <span class="badge bg-secondary">
+                                {{ departamento.funcionario_set.count }} funcionários
+                            </span>
+                        </td>
+                        <td>
+                            <a href="{% url 'departamento_update' departamento.pk %}" class="btn btn-sm btn-outline-warning" title="Editar">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center text-muted py-4">
+                            <i class="bi bi-building" style="font-size: 2rem;"></i>
+                            <p class="mt-2">Nenhum departamento cadastrado</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Paginação -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Paginação">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="Primeira">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">
+                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Próxima">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Última">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

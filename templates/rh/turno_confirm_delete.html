@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Excluir Turno{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>Excluir Turno</h1>
+    <p>Tem certeza que deseja excluir o turno "{{ object.nome }}"?</p>
+</div>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Sim, excluir</button>
+    <a href="{% url 'turno_list' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+{% endblock %}

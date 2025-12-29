@@ -1,0 +1,162 @@
+{% extends 'base.html' %}
+
+{% block title %}Nova Avaliação - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-star"></i> Nova Avaliação de Desempenho</h1>
+    <p>Avalie o desempenho de um funcionário</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Funcionário a Avaliar *</label>
+                    {{ form.funcionario }}
+                    {% if form.funcionario.errors %}
+                        <div class="text-danger small">{{ form.funcionario.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Avaliador *</label>
+                    {{ form.avaliador }}
+                    {% if form.avaliador.errors %}
+                        <div class="text-danger small">{{ form.avaliador.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Início do Período *</label>
+                    {{ form.periodo_inicio }}
+                    {% if form.periodo_inicio.errors %}
+                        <div class="text-danger small">{{ form.periodo_inicio.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Fim do Período *</label>
+                    {{ form.periodo_fim }}
+                    {% if form.periodo_fim.errors %}
+                        <div class="text-danger small">{{ form.periodo_fim.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <h4 class="mb-3 text-primary">
+                <i class="bi bi-list-check"></i> Critérios de Avaliação (1-5)
+            </h4>
+            
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Qualidade do Trabalho *</label>
+                    {{ form.qualidade_trabalho }}
+                    <small class="text-muted">1 = Ruim, 5 = Excelente</small>
+                    {% if form.qualidade_trabalho.errors %}
+                        <div class="text-danger small">{{ form.qualidade_trabalho.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Produtividade *</label>
+                    {{ form.produtividade }}
+                    <small class="text-muted">1 = Ruim, 5 = Excelente</small>
+                    {% if form.produtividade.errors %}
+                        <div class="text-danger small">{{ form.produtividade.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Pontualidade *</label>
+                    {{ form.pontualidade }}
+                    <small class="text-muted">1 = Ruim, 5 = Excelente</small>
+                    {% if form.pontualidade.errors %}
+                        <div class="text-danger small">{{ form.pontualidade.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Relacionamento Interpessoal *</label>
+                    {{ form.relacionamento }}
+                    <small class="text-muted">1 = Ruim, 5 = Excelente</small>
+                    {% if form.relacionamento.errors %}
+                        <div class="text-danger small">{{ form.relacionamento.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Iniciativa *</label>
+                    {{ form.iniciativa }}
+                    <small class="text-muted">1 = Ruim, 5 = Excelente</small>
+                    {% if form.iniciativa.errors %}
+                        <div class="text-danger small">{{ form.iniciativa.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Liderança (opcional)</label>
+                    {{ form.lideranca }}
+                    <small class="text-muted">1 = Ruim, 5 = Excelente</small>
+                    {% if form.lideranca.errors %}
+                        <div class="text-danger small">{{ form.lideranca.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <h4 class="mb-3 text-primary">
+                <i class="bi bi-chat-left-text"></i> Comentários
+            </h4>
+            
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Pontos Fortes</label>
+                    {{ form.pontos_fortes }}
+                    {% if form.pontos_fortes.errors %}
+                        <div class="text-danger small">{{ form.pontos_fortes.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Pontos de Melhoria</label>
+                    {{ form.pontos_melhoria }}
+                    {% if form.pontos_melhoria.errors %}
+                        <div class="text-danger small">{{ form.pontos_melhoria.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Plano de Ação</label>
+                    {{ form.plano_acao }}
+                    {% if form.plano_acao.errors %}
+                        <div class="text-danger small">{{ form.plano_acao.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Informação:</strong> A nota final será calculada automaticamente com base nos critérios avaliados.
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Criar Avaliação
+                    </button>
+                    <a href="{% url 'avaliacao_list' %}" class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

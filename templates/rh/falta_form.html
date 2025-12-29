@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Registrar Falta - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-plus-circle"></i> Registrar Falta</h1>
+    <p>Registre uma falta ou ausência de funcionário</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Funcionário *</label>
+                    {{ form.funcionario }}
+                    {% if form.funcionario.errors %}
+                        <div class="text-danger small">{{ form.funcionario.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Data da Falta *</label>
+                    {{ form.data }}
+                    {% if form.data.errors %}
+                        <div class="text-danger small">{{ form.data.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Tipo de Falta *</label>
+                    {{ form.tipo }}
+                    {% if form.tipo.errors %}
+                        <div class="text-danger small">{{ form.tipo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Motivo/Observação *</label>
+                    {{ form.motivo }}
+                    {% if form.motivo.errors %}
+                        <div class="text-danger small">{{ form.motivo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Justificativa</label>
+                    {{ form.justificativa }}
+                    {% if form.justificativa.errors %}
+                        <div class="text-danger small">{{ form.justificativa.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Horas Abonadas</label>
+                    {{ form.horas_abonadas }}
+                    {% if form.horas_abonadas.errors %}
+                        <div class="text-danger small">{{ form.horas_abonadas.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Comprovante (Atestado, etc.)</label>
+                    {{ form.arquivo_comprovante }}
+                    {% if form.arquivo_comprovante.errors %}
+                        <div class="text-danger small">{{ form.arquivo_comprovante.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Registrar Falta
+                    </button>
+                    <a href="{% url 'falta_list' %}" class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

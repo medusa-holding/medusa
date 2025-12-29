@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+
+{% block title %}Novo Documento - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-file-earmark-plus"></i> Novo Documento</h1>
+    <p>Cadastre um documento de funcionário</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Funcionário *</label>
+                    {{ form.funcionario }}
+                    {% if form.funcionario.errors %}
+                        <div class="text-danger small">{{ form.funcionario.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tipo de Documento *</label>
+                    {{ form.tipo }}
+                    {% if form.tipo.errors %}
+                        <div class="text-danger small">{{ form.tipo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Número</label>
+                    {{ form.numero }}
+                    {% if form.numero.errors %}
+                        <div class="text-danger small">{{ form.numero.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Descrição</label>
+                    {{ form.descricao }}
+                    {% if form.descricao.errors %}
+                        <div class="text-danger small">{{ form.descricao.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Data de Emissão</label>
+                    {{ form.data_emissao }}
+                    {% if form.data_emissao.errors %}
+                        <div class="text-danger small">{{ form.data_emissao.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Data de Validade</label>
+                    {{ form.data_validade }}
+                    {% if form.data_validade.errors %}
+                        <div class="text-danger small">{{ form.data_validade.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-12 mb-3">
+                    <label class="form-label">Arquivo *</label>
+                    {{ form.arquivo }}
+                    {% if form.arquivo.errors %}
+                        <div class="text-danger small">{{ form.arquivo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-upload"></i> Cadastrar Documento
+                    </button>
+                    <a href="{% url 'documento_list' %}" class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

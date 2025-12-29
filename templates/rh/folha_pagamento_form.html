@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% block title %}Nova Folha de Pagamento - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-file-earmark-plus"></i> Nova Folha de Pagamento</h1>
+    <p>Processe a folha de pagamento de um funcionário</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            <h4 class="mb-3 text-primary">
+                <i class="bi bi-person-badge"></i> Identificação
+            </h4>
+            
+            <div class="row">
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Funcionário *</label>
+                    {{ form.funcionario }}
+                    {% if form.funcionario.errors %}
+                        <div class="text-danger small">{{ form.funcionario.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Mês *</label>
+                    {{ form.mes_referencia }}
+                    {% if form.mes_referencia.errors %}
+                        <div class="text-danger small">{{ form.mes_referencia.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-2 mb-3">
+                    <label class="form-label">Ano *</label>
+                    {{ form.ano_referencia }}
+                    {% if form.ano_referencia.errors %}
+                        <div class="text-danger small">{{ form.ano_referencia.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Data de Pagamento *</label>
+                    {{ form.data_pagamento }}
+                    {% if form.data_pagamento.errors %}
+                        <div class="text-danger small">{{ form.data_pagamento.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <h4 class="mb-3 text-success">
+                <i class="bi bi-plus-circle"></i> Proventos
+            </h4>
+            
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Salário Base *</label>
+                    {{ form.salario_base }}
+                    {% if form.salario_base.errors %}
+                        <div class="text-danger small">{{ form.salario_base.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Horas Extras</label>
+                    {{ form.horas_extras }}
+                    {% if form.horas_extras.errors %}
+                        <div class="text-danger small">{{ form.horas_extras.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Valor Horas Extras</label>
+                    {{ form.valor_horas_extras }}
+                    {% if form.valor_horas_extras.errors %}
+                        <div class="text-danger small">{{ form.valor_horas_extras.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Adicional Insalubridade</label>
+                    {{ form.adicional_insalubridade }}
+                    {% if form.adicional_insalubridade.errors %}
+                        <div class="text-danger small">{{ form.adicional_insalubridade.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Adicional Periculosidade</label>
+                    {{ form.adicional_periculosidade }}
+                    {% if form.adicional_periculosidade.errors %}
+                        <div class="text-danger small">{{ form.adicional_periculosidade.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Adicional Técnico</label>
+                    {{ form.adicional_tecnico }}
+                    {% if form.adicional_tecnico.errors %}
+                        <div class="text-danger small">{{ form.adicional_tecnico.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Outros Proventos</label>
+                    {{ form.outros_proventos }}
+                    {% if form.outros_proventos.errors %}
+                        <div class="text-danger small">{{ form.outros_proventos.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <h4 class="mb-3 text-danger">
+                <i class="bi bi-dash-circle"></i> Descontos
+            </h4>
+            
+            <div class="row">
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">INSS</label>
+                    {{ form.inss }}
+                    {% if form.inss.errors %}
+                        <div class="text-danger small">{{ form.inss.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">IRRF</label>
+                    {{ form.irrf }}
+                    {% if form.irrf.errors %}
+                        <div class="text-danger small">{{ form.irrf.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Vale Transporte</label>
+                    {{ form.vale_transporte }}
+                    {% if form.vale_transporte.errors %}
+                        <div class="text-danger small">{{ form.vale_transporte.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Vale Alimentação</label>
+                    {{ form.vale_alimentacao }}
+                    {% if form.vale_alimentacao.errors %}
+                        <div class="text-danger small">{{ form.vale_alimentacao.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Plano de Saúde</label>
+                    {{ form.plano_saude }}
+                    {% if form.plano_saude.errors %}
+                        <div class="text-danger small">{{ form.plano_saude.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Outros Descontos</label>
+                    {{ form.outros_descontos }}
+                    {% if form.outros_descontos.errors %}
+                        <div class="text-danger small">{{ form.outros_descontos.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="alert alert-info">
+                <i class="bi bi-info-circle"></i>
+                <strong>Informação:</strong> O salário líquido será calculado automaticamente após o envio.
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-calculator"></i> Processar Folha
+                    </button>
+                    <a href="{% url 'folha_pagamento_list' %}" class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}Novo Benefício - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-plus-circle"></i> Novo Benefício</h1>
+    <p>Cadastre um novo benefício para os funcionários</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nome do Benefício *</label>
+                    {{ form.nome }}
+                    {% if form.nome.errors %}
+                        <div class="text-danger small">{{ form.nome.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Tipo *</label>
+                    {{ form.tipo }}
+                    {% if form.tipo.errors %}
+                        <div class="text-danger small">{{ form.tipo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Valor Pago pela Empresa</label>
+                    {{ form.valor_empresa }}
+                    {% if form.valor_empresa.errors %}
+                        <div class="text-danger small">{{ form.valor_empresa.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Valor Descontado do Funcionário</label>
+                    {{ form.valor_funcionario }}
+                    {% if form.valor_funcionario.errors %}
+                        <div class="text-danger small">{{ form.valor_funcionario.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-12 mb-3">
+                    <label class="form-label">Descrição</label>
+                    {{ form.descricao }}
+                    {% if form.descricao.errors %}
+                        <div class="text-danger small">{{ form.descricao.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="form-check">
+                        {{ form.obrigatorio }}
+                        <label class="form-check-label" for="{{ form.obrigatorio.id_for_label }}">
+                            Benefício Obrigatório
+                        </label>
+                    </div>
+                    {% if form.obrigatorio.errors %}
+                        <div class="text-danger small">{{ form.obrigatorio.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <div class="form-check">
+                        {{ form.ativo }}
+                        <label class="form-check-label" for="{{ form.ativo.id_for_label }}">
+                            Benefício Ativo
+                        </label>
+                    </div>
+                    {% if form.ativo.errors %}
+                        <div class="text-danger small">{{ form.ativo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-check-circle"></i> Cadastrar Benefício
+                    </button>
+                    <a href="{% url 'beneficio_list' %}" class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

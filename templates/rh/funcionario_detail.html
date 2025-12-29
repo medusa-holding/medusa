@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ funcionario.nome_completo }} - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <div class="d-flex align-items-center">
+                {% if funcionario.foto %}
+                    <img src="{{ funcionario.foto.url }}" alt="{{ funcionario.nome_completo }}" class="rounded-circle me-3" width="80" height="80">
+                {% else %}
+                    <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 80px; height: 80px; font-size: 2rem;">
+                        {{ funcionario.nome_completo|first }}
+                    </div>
+                {% endif %}
+                <div>
+                    <h1>{{ funcionario.nome_completo }}</h1>
+                    <p class="mb-1">{{ funcionario.cargo.nome }} - {{ funcionario.departamento.nome }}</p>
+                    <span class="badge bg-{% if funcionario.status == 'Ativo' %}success{% elif funcionario.status == 'Afastado' %}warning{% else %}danger{% endif %}">
+                        {{ funcionario.get_status_display }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'funcionario_update' funcionario.pk %}" class="btn btn-warning">
+                <i class="bi bi-pencil"></i> Editar
+            </a>
+            <a href="{% url 'funcionario_list' %}" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Voltar
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Informações do Funcionário -->
+<div class="row">
+    <!-- Dados Pessoais -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-person-badge"></i> Dados Pessoais</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Matrícula:</dt>
+                    <dd class="col-sm-8">{{ funcionario.matricula }}</dd>
+                    
+                    <dt class="col-sm-4">NUIT:</dt>
+                    <dd class="col-sm-8">{{ funcionario.cpf }}</dd>
+                    
+                    <dt class="col-sm-4">BI:</dt>
+                    <dd class="col-sm-8">{{ funcionario.rg|default:"-" }}</dd>
+                    
+                    <dt class="col-sm-4">Data Nascimento:</dt>
+                    <dd class="col-sm-8">{{ funcionario.data_nascimento|date:"d/m/Y" }} ({{ funcionario.idade }} anos)</dd>
+                    
+                    <dt class="col-sm-4">E-mail:</dt>
+                    <dd class="col-sm-8">{{ funcionario.email_corporativo }}</dd>
+                    
+                    <dt class="col-sm-4">Telefone:</dt>
+                    <dd class="col-sm-8">{{ funcionario.telefone|default:"-" }}</dd>
+                    
+                    <dt class="col-sm-4">Endereço:</dt>
+                    <dd class="col-sm-8">{{ funcionario.endereco }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Dados Profissionais -->
+    <div class="col-md-6 mb-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0"><i class="bi bi-briefcase-fill"></i> Dados Profissionais</h5>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Cargo:</dt>
+                    <dd class="col-sm-8">{{ funcionario.cargo.nome }}</dd>
+                    
+                    <dt class="col-sm-4">Departamento:</dt>
+                    <dd class="col-sm-8">{{ funcionario.departamento.nome }}</dd>
+                    
+                    <dt class="col-sm-4">Tipo Contrato:</dt>
+                    <dd class="col-sm-8">{{ funcionario.get_tipo_contrato_display }}</dd>
+                    
+                    <dt class="col-sm-4">Admissão:</dt>
+                    <dd class="col-sm-8">{{ funcionario.data_admissao|date:"d/m/Y" }}</dd>
+                    
+                    <dt class="col-sm-4">Tempo Empresa:</dt>
+                    <dd class="col-sm-8">{{ funcionario.tempo_empresa }}</dd>
+                    
+                    <dt class="col-sm-4">Salário Atual:</dt>
+                    <dd class="col-sm-8">MZN {{ funcionario.salario_atual|floatformat:2 }}</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Abas de Informações -->
+<div class="card">
+    <div class="card-header">
+        <ul class="nav nav-tabs card-header-tabs" id="funcionarioTabs" role="tablist">
+            <li class="nav-item">
+                <button class="nav-link active" id="ferias-tab" data-bs-toggle="tab" data-bs-target="#ferias" type="button">
+                    <i class="bi bi-calendar-check"></i> Férias
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="faltas-tab" data-bs-toggle="tab" data-bs-target="#faltas" type="button">
+                    <i class="bi bi-exclamation-triangle"></i> Faltas
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="folha-tab" data-bs-toggle="tab" data-bs-target="#folha" type="button">
+                    <i class="bi bi-currency-dollar"></i> Folha de Pagamento
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="avaliacoes-tab" data-bs-toggle="tab" data-bs-target="#avaliacoes" type="button">
+                    <i class="bi bi-star"></i> Avaliações
+                </button>
+            </li>
+            <li class="nav-item">
+                <button class="nav-link" id="documentos-tab" data-bs-toggle="tab" data-bs-target="#documentos" type="button">
+                    <i class="bi bi-file-earmark-text"></i> Documentos
+                </button>
+            </li>
+        </ul>
+    </div>
+    <div class="card-body">
+        <div class="tab-content" id="funcionarioTabContent">
+            <!-- Aba Férias -->
+            <div class="tab-pane fade show active" id="ferias" role="tabpanel">
+                {% if ferias %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Período</th>
+                                    <th>Dias</th>
+                                    <th>Status</th>
+                                    <th>Solicitada em</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for f in ferias %}
+                                <tr>
+                                    <td>{{ f.data_inicio|date:"d/m/Y" }} - {{ f.data_fim|date:"d/m/Y" }}</td>
+                                    <td>{{ f.dias_uteis }} dias úteis</td>
+                                    <td>
+                                        <span class="badge bg-{{ f.status|lower|slice:":3" }}">
+                                            {{ f.get_status_display }}
+                                        </span>
+                                    </td>
+                                    <td>{{ f.solicitada_em|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">Nenhum registro de férias encontrado</p>
+                {% endif %}
+            </div>
+            
+            <!-- Aba Faltas -->
+            <div class="tab-pane fade" id="faltas" role="tabpanel">
+                {% if faltas %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Data</th>
+                                    <th>Tipo</th>
+                                    <th>Motivo</th>
+                                    <th>Horas Abonadas</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for f in faltas %}
+                                <tr>
+                                    <td>{{ f.data|date:"d/m/Y" }}</td>
+                                    <td>{{ f.get_tipo_display }}</td>
+                                    <td>{{ f.motivo|truncatechars:50 }}</td>
+                                    <td>{{ f.horas_abonadas }}h</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">Nenhuma falta registrada</p>
+                {% endif %}
+            </div>
+            
+            <!-- Aba Folha de Pagamento -->
+            <div class="tab-pane fade" id="folha" role="tabpanel">
+                {% if folhas_pagamento %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Referência</th>
+                                    <th>Salário Bruto</th>
+                                    <th>Descontos</th>
+                                    <th>Salário Líquido</th>
+                                    <th>Data Pagamento</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for f in folhas_pagamento %}
+                                <tr>
+                                    <td>{{ f.mes_referencia }}/{{ f.ano_referencia }}</td>
+                                    <td>R$ {{ f.calcular_proventos|floatformat:2 }}</td>
+                                    <td>R$ {{ f.calcular_descontos|floatformat:2 }}</td>
+                                    <td><strong>R$ {{ f.salario_liquido|floatformat:2 }}</strong></td>
+                                    <td>{{ f.data_pagamento|date:"d/m/Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">Nenhuma folha de pagamento encontrada</p>
+                {% endif %}
+            </div>
+            
+            <!-- Aba Avaliações -->
+            <div class="tab-pane fade" id="avaliacoes" role="tabpanel">
+                {% if avaliacoes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Período</th>
+                                    <th>Avaliador</th>
+                                    <th>Nota Final</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for a in avaliacoes %}
+                                <tr>
+                                    <td>{{ a.periodo_inicio|date:"d/m/Y" }} - {{ a.periodo_fim|date:"d/m/Y" }}</td>
+                                    <td>{{ a.avaliador.nome_completo }}</td>
+                                    <td>
+                                        <span class="badge bg-{% if a.nota_final >= 4 %}success{% elif a.nota_final >= 3 %}warning{% else %}danger{% endif %}">
+                                            {{ a.nota_final|floatformat:1 }}
+                                        </span>
+                                    </td>
+                                    <td>{{ a.get_status_display }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">Nenhuma avaliação encontrada</p>
+                {% endif %}
+            </div>
+            
+            <!-- Aba Documentos -->
+            <div class="tab-pane fade" id="documentos" role="tabpanel">
+                {% if documentos %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tipo</th>
+                                    <th>Número</th>
+                                    <th>Descrição</th>
+                                    <th>Data Emissão</th>
+                                    <th>Validade</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for d in documentos %}
+                                <tr>
+                                    <td>{{ d.get_tipo_display }}</td>
+                                    <td>{{ d.numero|default:"-" }}</td>
+                                    <td>{{ d.descricao|default:"-" }}</td>
+                                    <td>{{ d.data_emissao|date:"d/m/Y"|default:"-" }}</td>
+                                    <td>{{ d.data_validade|date:"d/m/Y"|default:"-" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center py-3">Nenhum documento encontrado</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

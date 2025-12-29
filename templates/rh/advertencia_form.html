@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+
+{% block title %}Nova Advertência - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1><i class="bi bi-exclamation-triangle"></i> Nova Advertência</h1>
+    <p>Registre uma advertência disciplinar</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row">
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Funcionário *</label>
+                    {{ form.funcionario }}
+                    {% if form.funcionario.errors %}
+                        <div class="text-danger small">{{ form.funcionario.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Tipo de Advertência *</label>
+                    {{ form.tipo }}
+                    {% if form.tipo.errors %}
+                        <div class="text-danger small">{{ form.tipo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-3 mb-3">
+                    <label class="form-label">Data da Ocorrência *</label>
+                    {{ form.data_ocorrencia }}
+                    {% if form.data_ocorrencia.errors %}
+                        <div class="text-danger small">{{ form.data_ocorrencia.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Motivo *</label>
+                    {{ form.motivo }}
+                    {% if form.motivo.errors %}
+                        <div class="text-danger small">{{ form.motivo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Aplicada por</label>
+                    {{ form.aplicada_por }}
+                    {% if form.aplicada_por.errors %}
+                        <div class="text-danger small">{{ form.aplicada_por.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-12 mb-3">
+                    <label class="form-label">Descrição Detalhada do Ocorrido *</label>
+                    {{ form.descricao }}
+                    {% if form.descricao.errors %}
+                        <div class="text-danger small">{{ form.descricao.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Documento Oficial</label>
+                    {{ form.arquivo_documento }}
+                    {% if form.arquivo_documento.errors %}
+                        <div class="text-danger small">{{ form.arquivo_documento.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="alert alert-warning">
+                <i class="bi bi-exclamation-triangle"></i>
+                <strong>Atenção:</strong> Esta advertência será registrada no histórico do funcionário.
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-danger">
+                        <i class="bi bi-exclamation-octagon"></i> Registrar Advertência
+                    </button>
+                    <a href="{% url 'advertencia_list' %}" class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+
+{% block title %}Folha de Pagamento - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1><i class="bi bi-currency-dollar"></i> Folha de Pagamento</h1>
+            <p>Gerencie a folha de pagamento dos funcionários</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'folha_pagamento_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Nova Folha
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Formulário de Busca -->
+<div class="card mb-4">
+    <div class="card-body">
+        <form method="get" class="row g-3">
+            <div class="col-md-3">
+                {{ search_form.funcionario }}
+            </div>
+            <div class="col-md-2">
+                {{ search_form.mes_referencia }}
+            </div>
+            <div class="col-md-2">
+                {{ search_form.ano_referencia }}
+            </div>
+            <div class="col-md-3">
+                {{ search_form.departamento }}
+            </div>
+            <div class="col-md-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Buscar
+                </button>
+                <a href="{% url 'folha_pagamento_list' %}" class="btn btn-outline-secondary">
+                    <i class="bi bi-x-circle"></i> Limpar
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Tabela de Folha de Pagamento -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Referência</th>
+                        <th>Funcionário</th>
+                        <th>Departamento</th>
+                        <th>Salário Base</th>
+                        <th>Total Proventos</th>
+                        <th>Total Descontos</th>
+                        <th>Salário Líquido</th>
+                        <th>Data Pagamento</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for folha in page_obj %}
+                    <tr>
+                        <td>
+                            <strong>{{ folha.mes_referencia }}/{{ folha.ano_referencia }}</strong>
+                        </td>
+                        <td>
+                            <strong>{{ folha.funcionario.nome_completo }}</strong>
+                            <br><small class="text-muted">{{ folha.funcionario.matricula }}</small>
+                        </td>
+                        <td>{{ folha.funcionario.departamento.nome }}</td>
+                        <td>R$ {{ folha.salario_base|floatformat:2 }}</td>
+                        <td class="text-success">R$ {{ folha.calcular_proventos|floatformat:2 }}</td>
+                        <td class="text-danger">R$ {{ folha.calcular_descontos|floatformat:2 }}</td>
+                        <td><strong class="text-primary">R$ {{ folha.salario_liquido|floatformat:2 }}</strong></td>
+                        <td>{{ folha.data_pagamento|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="8" class="text-center text-muted py-4">
+                            <i class="bi bi-file-earmark-spreadsheet" style="font-size: 2rem;"></i>
+                            <p class="mt-2">Nenhuma folha de pagamento encontrada</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Paginação -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Paginação">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="Primeira">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">
+                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Próxima">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Última">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Resumo Financeiro -->
+{% if page_obj %}
+<div class="card mt-4">
+    <div class="card-header">
+        <h5 class="mb-0"><i class="bi bi-calculator"></i> Resumo Financeiro</h5>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-3 text-center">
+                <h4 class="text-success">R$ {{ page_obj.object_list.aggregate total=Sum('salario_liquido')|floatformat:2 }}</h4>
+                <p class="text-muted">Total Líquido</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <h4 class="text-primary">R$ {{ page_obj.object_list.aggregate total=Sum('salario_base')|floatformat:2 }}</h4>
+                <p class="text-muted">Total Base</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <h4 class="text-danger">R$ {{ page_obj.object_list.aggregate total=Sum('inss')|floatformat:2 }}</h4>
+                <p class="text-muted">Total INSS</p>
+            </div>
+            <div class="col-md-3 text-center">
+                <h4 class="text-warning">R$ {{ page_obj.object_list.aggregate total=Sum('irrf')|floatformat:2 }}</h4>
+                <p class="text-muted">Total IRRF</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

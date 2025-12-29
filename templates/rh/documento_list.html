@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+
+{% block title %}Documentos - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <div class="row align-items-center">
+        <div class="col">
+            <h1><i class="bi bi-file-earmark-text"></i> Documentos</h1>
+            <p>Gerencie os documentos dos funcionários</p>
+        </div>
+        <div class="col-auto">
+            <a href="{% url 'documento_create' %}" class="btn btn-primary">
+                <i class="bi bi-plus-circle"></i> Novo Documento
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Tabela de Documentos -->
+<div class="card">
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Funcionário</th>
+                        <th>Tipo</th>
+                        <th>Número</th>
+                        <th>Descrição</th>
+                        <th>Data Emissão</th>
+                        <th>Validade</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for documento in page_obj %}
+                    <tr>
+                        <td>
+                            <strong>{{ documento.funcionario.nome_completo }}</strong>
+                            <br><small class="text-muted">{{ documento.funcionario.matricula }}</small>
+                        </td>
+                        <td>{{ documento.get_tipo_display }}</td>
+                        <td>{{ documento.numero|default:"-" }}</td>
+                        <td>{{ documento.descricao|default:"-"|truncatechars:30 }}</td>
+                        <td>{{ documento.data_emissao|date:"d/m/Y"|default:"-" }}</td>
+                        <td>{{ documento.data_validade|date:"d/m/Y"|default:"-" }}</td>
+                        <td>
+                            {% if documento.arquivo %}
+                                <a href="{{ documento.arquivo.url }}" target="_blank" class="btn btn-sm btn-outline-primary" title="Ver Documento">
+                                    <i class="bi bi-eye"></i>
+                                </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            <i class="bi bi-file-earmark" style="font-size: 2rem;"></i>
+                            <p class="mt-2">Nenhum documento cadastrado</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        
+        <!-- Paginação -->
+        {% if page_obj.has_other_pages %}
+        <nav aria-label="Paginação">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page=1" aria-label="Primeira">
+                            <i class="bi bi-chevron-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Anterior">
+                            <i class="bi bi-chevron-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                <li class="page-item active">
+                    <span class="page-link">
+                        Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}
+                    </span>
+                </li>
+                
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Próxima">
+                            <i class="bi bi-chevron-right"></i>
+                        </a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Última">
+                            <i class="bi bi-chevron-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

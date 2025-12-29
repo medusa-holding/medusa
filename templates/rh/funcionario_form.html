@@ -1,0 +1,243 @@
+{% extends 'base.html' %}
+
+{% block title %}{% if form.instance.pk %}Editar{% else %}Novo{% endif %} Funcionário - HR Manager Pro{% endblock %}
+
+{% block content %}
+<div class="page-header">
+    <h1>
+        <i class="bi bi-person-fill{% if not form.instance.pk %}-add{% endif %}"></i>
+        {% if form.instance.pk %}Editar{% else %}Novo{% endif %} Funcionário
+    </h1>
+    <p>{% if form.instance.pk %}Atualize as informações do funcionário{% else %}Cadastre um novo funcionário no sistema{% endif %}</p>
+</div>
+
+<div class="card">
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <div class="row">
+                <h4 class="mb-3 text-primary">
+                    <i class="bi bi-person-badge"></i> Dados Pessoais
+                </h4>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Nome Completo *</label>
+                    {{ form.nome_completo }}
+                    {% if form.nome_completo.errors %}
+                        <div class="text-danger small">{{ form.nome_completo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                    <label class="form-label">Foto</label>
+                    {{ form.foto }}
+                    {% if form.foto.errors %}
+                        <div class="text-danger small">{{ form.foto.errors.0 }}</div>
+                    {% endif %}
+                    {% if form.instance.foto %}
+                        <div class="mt-2">
+                            <img src="{{ form.instance.foto.url }}" alt="Foto atual" class="rounded-circle" width="80" height="80">
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Matrícula *</label>
+                    {{ form.matricula }}
+                    {% if form.matricula.errors %}
+                        <div class="text-danger small">{{ form.matricula.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">NUIT *</label>
+                    {{ form.cpf }}
+                    {% if form.cpf.errors %}
+                        <div class="text-danger small">{{ form.cpf.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">BI</label>
+                    {{ form.rg }}
+                    {% if form.rg.errors %}
+                        <div class="text-danger small">{{ form.rg.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Data de Nascimento *</label>
+                    {{ form.data_nascimento }}
+                    {% if form.data_nascimento.errors %}
+                        <div class="text-danger small">{{ form.data_nascimento.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Telefone</label>
+                    {{ form.telefone }}
+                    {% if form.telefone.errors %}
+                        <div class="text-danger small">{{ form.telefone.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">E-mail Corporativo *</label>
+                    {{ form.email_corporativo }}
+                    {% if form.email_corporativo.errors %}
+                        <div class="text-danger small">{{ form.email_corporativo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-12 mb-3">
+                    <label class="form-label">Endereço Completo *</label>
+                    {{ form.endereco }}
+                    {% if form.endereco.errors %}
+                        <div class="text-danger small">{{ form.endereco.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="row">
+                <h4 class="mb-3 text-primary">
+                    <i class="bi bi-briefcase-fill"></i> Dados Profissionais
+                </h4>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Cargo *</label>
+                    {{ form.cargo }}
+                    {% if form.cargo.errors %}
+                        <div class="text-danger small">{{ form.cargo.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Turno de Trabalho</label>
+                    {{ form.turno }}
+                    {% if form.turno.errors %}
+                        <div class="text-danger small">{{ form.turno.errors.0 }}</div>
+                    {% endif %}
+                </div>
+
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Departamento *</label>
+                    {{ form.departamento }}
+                    {% if form.departamento.errors %}
+                        <div class="text-danger small">{{ form.departamento.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Data de Admissão *</label>
+                    {{ form.data_admissao }}
+                    {% if form.data_admissao.errors %}
+                        <div class="text-danger small">{{ form.data_admissao.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Tipo de Contrato *</label>
+                    {{ form.tipo_contrato }}
+                    {% if form.tipo_contrato.errors %}
+                        <div class="text-danger small">{{ form.tipo_contrato.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Status *</label>
+                    {{ form.status }}
+                    {% if form.status.errors %}
+                        <div class="text-danger small">{{ form.status.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Salário Atual *</label>
+                    {{ form.salario_atual }}
+                    {% if form.salario_atual.errors %}
+                        <div class="text-danger small">{{ form.salario_atual.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Data de Demissão</label>
+                    {{ form.data_demissao }}
+                    {% if form.data_demissao.errors %}
+                        <div class="text-danger small">{{ form.data_demissao.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <hr class="my-4">
+            
+            <div class="row">
+                <h4 class="mb-3 text-primary">
+                    <i class="bi bi-bank"></i> Dados Bancários
+                </h4>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Banco</label>
+                    {{ form.banco }}
+                    {% if form.banco.errors %}
+                        <div class="text-danger small">{{ form.banco.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Agência</label>
+                    {{ form.agencia }}
+                    {% if form.agencia.errors %}
+                        <div class="text-danger small">{{ form.agencia.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div class="col-md-4 mb-3">
+                    <label class="form-label">Conta Corrente</label>
+                    {{ form.conta_corrente }}
+                    {% if form.conta_corrente.errors %}
+                        <div class="text-danger small">{{ form.conta_corrente.errors.0 }}</div>
+                    {% endif %}
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi {% if form.instance.pk %}bi-check-circle{% else %}bi-plus-circle{% endif %}"></i>
+                        {% if form.instance.pk %}Atualizar{% else %}Cadastrar{% endif %} Funcionário
+                    </button>
+                    <a href="{% url 'funcionario_list' %}" class="btn btn-outline-secondary ms-2">
+                        <i class="bi bi-x-circle"></i> Cancelar
+                    </a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const cargoSelect = document.getElementById('id_cargo');
+    const salarioInput = document.getElementById('id_salario_atual');
+
+    cargoSelect.addEventListener('change', function () {
+        const cargoId = this.value;
+
+        if (!cargoId) {
+            salarioInput.value = '';
+            return;
+        }
+
+        fetch(`/ajax/obter-salario-cargo/?cargo_id=${cargoId}`)
+            .then(response => response.json())
+            .then(data => {
+                salarioInput.value = data.salario.toFixed(2);
+            });
+    });
+});
+</script>
+
+{% endblock %}
